@@ -25,6 +25,16 @@ describe("Token contract", function () {
             expect(await hardhatToken.balanceOf(owner.address)).to.equal(await hardhatToken.totalSupply())
         });
     });
+
+    describe("Functionality", function() {
+        it("Should transfer amount from addr1 to addr2", async function() {
+            await hardhatToken.transfer(addr1.address, 100);
+            expect(await hardhatToken.balanceOf(addr1.address)).to.equal(100);
+            await hardhatToken.connect(addr1).transfer(addr2.address, 50);
+            expect(await hardhatToken.balanceOf(addr1.address)).to.equal(50);
+            expect(await hardhatToken.balanceOf(addr2.address)).to.equal(50);
+        });
+    });
 //     it("Deployment should assign the total supply of tokens to the owner", async function () {
 //       const [owner, addr1, addr2] = await ethers.getSigners();
 
