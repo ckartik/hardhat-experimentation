@@ -35,6 +35,17 @@ describe("Token contract", function () {
             expect(await hardhatToken.balanceOf(addr2.address)).to.equal(50);
         });
     });
+
+    describe("Payment reversion", function () {
+        it("Should revert and not impact orignal user balance", async function () {
+            const intialOwnerBalance = await hardhatToken.balanceOf(owner.address);
+            await expect(hardhatToken.connect(addr1).transfer(owner.address, 1)).to.be.revertedWith("Not enough tokens");
+            expect(await hardhatToken.balanceOf(owner.address)).to.equal(intialOwnerBalance);
+            await hardhatToken.transfer(addr1.address, 1);
+            expect(await hardhatToken.balanceOf(owner.address)).to.equal(intialOwnerBalance.sub(1));
+            await expect(hardhatToken.connect(addr1).transfer(owner.address, 5)).to.be.revertedWith("Not enough tokens");
+        });
+    });
 //     it("Deployment should assign the total supply of tokens to the owner", async function () {
 //       const [owner, addr1, addr2] = await ethers.getSigners();
 
